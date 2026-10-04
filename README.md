@@ -195,8 +195,8 @@ do not require the original author's software or audio devices.
 
 - If the icon is rearranged, restore the launcher to refresh its position.
   Explorer accessibility lookup runs in the background. If Explorer is restarting
-  or cannot expose the button, the menu keeps its last anchor or temporarily uses
-  the primary taskbar's center. Taskbar overflow and custom shells may prevent
+  or cannot expose the button, a taskbar click opens the menu on the clicked
+  monitor until the exact icon position is available. Taskbar overflow and custom shells may prevent
   exact icon discovery.
 - Windows' **system** theme is followed, matching the taskbar even when the
   separate application theme is different. Theme refresh does not modify Windows.
