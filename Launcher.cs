@@ -156,8 +156,15 @@ namespace CodexApps {
         }
         void PlaceMenu() {
             if (rebuilding || menuSize == Size.Empty) return;
-            var work = anchor == null ? Screen.PrimaryScreen.WorkingArea : Screen.FromRectangle(anchor.Button).WorkingArea;
-            var center = anchor == null ? new Point(work.Left + work.Width / 2, work.Bottom) : new Point(anchor.Button.Left + anchor.Button.Width / 2, anchor.Button.Top);
+            var clickedScreen = Screen.FromPoint(invocation);
+            var anchorScreen = anchor == null ? null : Screen.FromRectangle(anchor.Button);
+            bool useClick = TaskbarAnchor.PreferInvokedScreen(clickedScreen.Bounds, clickedScreen.WorkingArea,
+                invocation, anchorScreen == null ? (Rectangle?)null : anchorScreen.Bounds);
+            var screen = useClick ? clickedScreen : anchorScreen ?? Screen.PrimaryScreen;
+            var work = screen.WorkingArea;
+            var center = useClick ? new Point(invocation.X, work.Bottom)
+                : anchor == null ? new Point(work.Left + work.Width / 2, work.Bottom)
+                : new Point(anchor.Button.Left + anchor.Button.Width / 2, anchor.Button.Top);
             var bounds = Placement.AboveTaskbar(work, center, menuSize, Math.Max(4, (int)(6 * DeviceScale())));
             if (Bounds != bounds) Bounds = bounds;
         }
@@ -166,15 +173,19 @@ namespace CodexApps {
             locating = true;
             var handle = Handle;
             var click = invocation;
+            bool retry = false;
             try {
                 var matches = await Task.Run(() => TaskbarAnchor.Find(handle));
                 if (IsDisposed) return;
+                // A later activation may have happened while this lookup was
+                // in flight. Never let its old click move the menu back.
+                if (click != invocation) { retry = true; return; }
                 var found = TaskbarAnchor.Select(matches, click, anchor == null ? (Rectangle?)null : anchor.Taskbar, Screen.PrimaryScreen.Bounds);
                 if (found != null) anchor = found;
                 if (WindowState == FormWindowState.Normal) PlaceMenu();
                 WriteDiagnostics(found != null);
             } catch (Exception) { /* Explorer can restart while its accessibility tree is being read. */ }
-            finally { locating = false; }
+            finally { locating = false; if (retry && !IsDisposed) RefreshAnchor(); }
         }
         void WriteDiagnostics(bool resolved) {
             try {

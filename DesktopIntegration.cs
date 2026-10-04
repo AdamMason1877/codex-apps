@@ -67,6 +67,12 @@ namespace CodexApps {
                 ?? buttons.FirstOrDefault(b => b.Taskbar.IntersectsWith(primary))
                 ?? buttons.FirstOrDefault();
         }
+        internal static bool PreferInvokedScreen(Rectangle screen, Rectangle work, Point invocation, Rectangle? anchorScreen) {
+            // A click in the taskbar area must take precedence over an anchor
+            // retained from the last monitor while UI Automation catches up.
+            return screen.Contains(invocation) && !work.Contains(invocation)
+                && (!anchorScreen.HasValue || anchorScreen.Value != screen);
+        }
     }
 
     internal sealed class ThemePalette {

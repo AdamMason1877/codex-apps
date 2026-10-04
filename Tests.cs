@@ -73,6 +73,11 @@ namespace CodexApps {
             selected = TaskbarAnchor.Select(buttonsFound, new Point(-480,1050), null, new Rectangle(0,0,1920,1080));
             if (selected != secondaryButton) throw new Exception("Click on secondary taskbar chose the wrong icon.");
             if (TaskbarAnchor.Select(buttonsFound, new Point(20,20), secondaryButton.Taskbar, new Rectangle(0,0,1920,1080)) != secondaryButton) throw new Exception("Keyboard restore did not retain the last taskbar.");
+            var secondaryScreen = new Rectangle(-1920,0,1920,1080);
+            var secondaryWork = new Rectangle(-1920,0,1920,1032);
+            if (!TaskbarAnchor.PreferInvokedScreen(secondaryScreen, secondaryWork, new Point(-480,1050), new Rectangle(0,0,1920,1080))) throw new Exception("A secondary-taskbar click must override the previous monitor immediately.");
+            if (TaskbarAnchor.PreferInvokedScreen(secondaryScreen, secondaryWork, new Point(-480,500), new Rectangle(0,0,1920,1080))) throw new Exception("A click in the desktop must not discard the previous anchor.");
+            if (TaskbarAnchor.PreferInvokedScreen(secondaryScreen, secondaryWork, new Point(-480,1050), secondaryScreen)) throw new Exception("The resolved icon anchor must center the menu on its button.");
             var anchored = Placement.AboveTaskbar(new Rectangle(0,0,1920,1032), new Point(primaryButton.Button.Left + primaryButton.Button.Width/2,1032), new Size(410,258),6);
             if (anchored.Left + anchored.Width/2 != primaryButton.Button.Left + primaryButton.Button.Width/2) throw new Exception("Menu is not centered above the actual button.");
             if (!TaskbarAnchor.Matches("Codex Apps, 1 running window", "") || TaskbarAnchor.Matches("Codex", "") || TaskbarAnchor.Matches("Other Codex Apps", "")) throw new Exception("Taskbar matching could confuse the launcher with another app.");
