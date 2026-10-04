@@ -1,0 +1,15 @@
+# Machine-specific configuration and diagnostics
+apps.local.json
+apps.local.*.json
+desktop-state.json
+test-results.txt
+*.log
+# Generated files and distribution archives
+*.exe
+CodexApps.ico
+*.pdb
+releases/
+bin/
+obj/
+.vs/
+*.user

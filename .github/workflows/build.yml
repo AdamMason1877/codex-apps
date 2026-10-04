@@ -1,0 +1,24 @@
+name: Build and test Windows launcher
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Build, test, and package
+        shell: powershell
+        run: .\package.ps1
+      - name: Upload release archives
+        uses: actions/upload-artifact@v7
+        with:
+          name: CodexApps-Windows
+          path: releases/*
+          if-no-files-found: error

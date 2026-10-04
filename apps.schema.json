@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Codex Apps configuration",
+  "type": "array",
+  "minItems": 0,
+  "maxItems": 500,
+  "items": { "$ref": "#/$defs/entry" },
+  "$defs": {
+    "name": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "\\S" },
+    "description": { "type": "string", "maxLength": 160 },
+    "entry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["name", "path"],
+          "additionalProperties": false,
+          "properties": {
+            "name": { "$ref": "#/$defs/name" },
+            "description": { "$ref": "#/$defs/description" },
+            "path": { "type": "string", "minLength": 1 },
+            "arguments": { "type": "string" },
+            "workingDirectory": { "type": "string" },
+            "windowTitle": { "type": "string" },
+            "reuseExisting": { "type": "boolean" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["name", "items"],
+          "additionalProperties": false,
+          "properties": {
+            "name": { "$ref": "#/$defs/name" },
+            "description": { "$ref": "#/$defs/description" },
+            "items": { "type": "array", "minItems": 0, "maxItems": 500, "items": { "$ref": "#/$defs/entry" } }
+          }
+        }
+      ]
+    }
+  }
+}

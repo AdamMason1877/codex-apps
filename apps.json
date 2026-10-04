@@ -1,0 +1,21 @@
+[
+  {
+    "name": "Windows tools",
+    "description": "Example category — customize with Organize",
+    "items": [
+      {
+        "name": "Notepad",
+        "path": "%WINDIR%\\System32\\notepad.exe"
+      },
+      {
+        "name": "Utilities",
+        "items": [
+          {
+            "name": "Calculator",
+            "path": "%WINDIR%\\System32\\calc.exe"
+          }
+        ]
+      }
+    ]
+  }
+]
